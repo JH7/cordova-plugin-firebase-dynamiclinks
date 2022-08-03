@@ -36,8 +36,6 @@
         CDVPluginResult *pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsDictionary:self.lastDynamicLinkData];
         [pluginResult setKeepCallbackAsBool:YES];
         [self.commandDelegate sendPluginResult:pluginResult callbackId:self.dynamicLinkCallbackId];
-
-        self.lastDynamicLinkData = nil;
     }
 }
 
