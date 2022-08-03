@@ -34,6 +34,7 @@ public class FirebaseDynamicLinksPlugin extends ReflectiveCordovaPlugin {
     private FirebaseDynamicLinks firebaseDynamicLinks;
     private String domainUriPrefix;
     private CallbackContext dynamicLinkCallback;
+    private JSONObject cachedResult;
 
     @Override
     protected void pluginInitialize() {
@@ -58,6 +59,14 @@ public class FirebaseDynamicLinksPlugin extends ReflectiveCordovaPlugin {
     @CordovaMethod
     private void onDynamicLink(CallbackContext callbackContext) {
         dynamicLinkCallback = callbackContext;
+
+        if (cachedResult) {
+            PluginResult pluginResult = new PluginResult(PluginResult.Status.OK, cachedResult);
+            pluginResult.setKeepCallback(true);
+            callbackContext.sendPluginResult(pluginResult);
+
+            cachedResult = null;
+        }
     }
 
     @CordovaMethod(ExecutionThread.WORKER)
@@ -95,6 +104,7 @@ public class FirebaseDynamicLinksPlugin extends ReflectiveCordovaPlugin {
                         result.put("clickTimestamp", data.getClickTimestamp());
                         result.put("minimumAppVersion", data.getMinimumAppVersion());
 
+                        cachedResult = result;
                         if (callbackContext != null) {
                             PluginResult pluginResult = new PluginResult(PluginResult.Status.OK, result);
                             pluginResult.setKeepCallback(callbackContext == dynamicLinkCallback);
