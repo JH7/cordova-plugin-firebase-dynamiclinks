@@ -60,7 +60,7 @@ public class FirebaseDynamicLinksPlugin extends ReflectiveCordovaPlugin {
     private void onDynamicLink(CallbackContext callbackContext) {
         dynamicLinkCallback = callbackContext;
 
-        if (cachedResult) {
+        if (cachedResult != null) {
             PluginResult pluginResult = new PluginResult(PluginResult.Status.OK, cachedResult);
             pluginResult.setKeepCallback(true);
             callbackContext.sendPluginResult(pluginResult);
