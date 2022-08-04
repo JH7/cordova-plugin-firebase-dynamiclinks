@@ -46,9 +46,7 @@ public class FirebaseDynamicLinksPlugin extends ReflectiveCordovaPlugin {
 
     @Override
     public void onNewIntent(Intent intent) {
-        if (dynamicLinkCallback != null) {
-            respondWithDynamicLink(intent, dynamicLinkCallback);
-        }
+        respondWithDynamicLink(intent, dynamicLinkCallback);
     }
 
     @CordovaMethod
@@ -64,6 +62,8 @@ public class FirebaseDynamicLinksPlugin extends ReflectiveCordovaPlugin {
             PluginResult pluginResult = new PluginResult(PluginResult.Status.OK, cachedResult);
             pluginResult.setKeepCallback(true);
             callbackContext.sendPluginResult(pluginResult);
+        } else {
+            respondWithDynamicLink(cordova.getActivity().getIntent(), dynamicLinkCallback);
         }
     }
 
@@ -95,7 +95,7 @@ public class FirebaseDynamicLinksPlugin extends ReflectiveCordovaPlugin {
                         PendingDynamicLinkData data = task.getResult();
 
 			// Hathaway code (Java version) change made to avoid a "phantom" empty deeplink from clobbering a valid deeplink on first launch. Refer to ticket PRG-1613
-			if ("".equals(data.getLink())) return null;
+			if (data == null || "".equals(data.getLink())) return null;
 
                         JSONObject result = new JSONObject();
                         result.put("deepLink", data.getLink());
